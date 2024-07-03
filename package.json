@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
     "apexcharts": "^3.45.2",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",

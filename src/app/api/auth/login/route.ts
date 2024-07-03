@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../../../lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 
-export async function POST(request) {
+export async function POST(request:NextRequest) {
   await dbConnect();
 
   const { username, password } = await request.json();
@@ -19,8 +19,16 @@ export async function POST(request) {
   if (!isMatch) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
   }
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+        return NextResponse.json(
+        { error: "JWT secret is not defined" },
+        { status: 500 },
+        );
+    }
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+// @ts-nocheck
+  const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
     expiresIn: "1h",
   });
 
