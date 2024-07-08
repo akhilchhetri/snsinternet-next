@@ -6,21 +6,21 @@ import { CirclePlusIcon } from "lucide-react";
 
 const CustomersTable = ({
   customers,
-  //   setCustomer,
-  //   setModal,
-  //   setMode,
+    setCustomer,
+    setModal,
+    setMode,
 }: {
   customers: any;
-  //   setCustomer: (d: any) => void;
-  //   setModal: (d: boolean) => void;
-  //   setMode: (d: string) => void;
+    setCustomer: (d: any) => void;
+    setModal: (d: boolean) => void;
+    setMode: (d: string) => void;
 }) => {
   const handleAddPayment = (data: any) => {
-    // setModal(true);
-    // setCustomer(data);
-    // setMode("add");
+    setModal(true);
+    setCustomer(data);
+    setMode("add");
   };
-  console.log(customers);
+  
   return (
     <div className="w-full rounded-lg border border-stroke pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="bg-red-500 flex flex-col">

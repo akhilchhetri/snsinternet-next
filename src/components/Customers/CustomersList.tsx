@@ -4,11 +4,12 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import ChartOne from "@/components/Charts/ChartOne";
 import ChartTwo from "@/components/Charts/ChartTwo";
 import dynamic from "next/dynamic";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useApp } from "@/lib/appContext";
 import CustomersTable from "./CustomersTable";
 import { BarLoader, CircleLoader } from "react-spinners";
+import AddPaymentModal from "../Modal/addPaymentModal";
 
 const Customers: React.FC = () => {
   // @ts-nocheck
@@ -23,9 +24,18 @@ const Customers: React.FC = () => {
   useEffect(() => {
     loadCustomers();
   }, []);
+  const [customer, setCustomer] = useState(undefined)
+  const [mode, setMode] = useState("add");
+  const [modal, closeModal] = useState(false);
   return (
     <>
       <CustomerSearch setSearchText={setSearchText} />
+      <AddPaymentModal
+        isOpen={modal}
+        setIsOpen={closeModal}
+        customer={customer}
+        mode={mode}
+      />
       {searchText ? (
         <div className="px-5 py-2">
           {searching ? (
@@ -48,9 +58,9 @@ const Customers: React.FC = () => {
         {customers?.length > 0 ? (
           <CustomersTable
             customers={customers}
-            // setCustomer={setCustomer}
-            // setModal={closeModal}
-            // setMode={setMode}
+            setCustomer={setCustomer}
+            setModal={closeModal}
+            setMode={setMode}
           />
         ) : (
           <div className="flex h-full w-full flex-row items-center justify-center">

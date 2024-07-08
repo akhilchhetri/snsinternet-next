@@ -3,7 +3,8 @@
 import Link from "next/link";
 // import usePackages from "../hooks/usePackages";
 import moment from "moment";
-import { PlusCircleIcon } from "lucide-react";
+import { PlusCircleIcon, Trash2 } from "lucide-react";
+
 
 const PaymentsTable = ({
   payments,
@@ -11,17 +12,24 @@ const PaymentsTable = ({
   setPayment,
   setMode,
   selectedYear,
+  deletePayment,
+  deleting
 }: {
   payments: any;
   setPayment: (d: any) => void;
   setModal: (d: boolean) => void;
   setMode: (d: string) => void;
+  deletePayment: (d: any) => void;
   selectedYear: any;
+  deleting: boolean;
 }) => {
   const handleEditPayment = (data: any) => {
     setModal(true);
     setPayment(data);
     setMode("edit");
+  };
+  const handleDeletePayment = (data: any) => {
+   deletePayment(data)
   };
   return (
     <div className="w-full rounded-sm border border-stroke px-2 pb-2.5 pt-2 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 md:px-5 md:pt-6 xl:pb-1">
@@ -132,6 +140,15 @@ const PaymentsTable = ({
                     className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-2 py-2 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
                   >
                     Edit
+                  </button>
+                  <button
+                    disabled={deleting}
+                    onClick={() => handleDeletePayment(each)}
+                    className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-2 py-2 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
+                  >
+                    
+                    <Trash2 className="size-3 text-red" />
+                    <span className="ml-[1px] text-red">Delete</span>
                   </button>
                 </div>
               </div>

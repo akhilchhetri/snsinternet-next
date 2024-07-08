@@ -6,7 +6,6 @@ const authMiddleware = (handler) => {
   return async (req, res) => {
     try{
       const {name,value} = req.cookies.get('token')
-    // console.log(authHeader)
     // if (!authHeader) {
     //   return NextResponse.json({ error: "No token provided" }, { status: 401 });
     // }

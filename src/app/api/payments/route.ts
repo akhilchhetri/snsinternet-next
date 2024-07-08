@@ -46,17 +46,41 @@ const handler = async (req) => {
           // const newPayment = new Payment(data);
           // await newPayment.save();
           delete data?.payment_id;
-          console.log("This is data", data);
           const updatedPayment = await Payment.findByIdAndUpdate(
             { _id: payment_id },
             data,
             { new: true, runValidators: true },
           );
-          console.log("this is ypdated payment", updatedPayment);
           return NextResponse.json(
             { success: true, data: updatedPayment },
             { status: 201 },
           );
+        } else {
+          return NextResponse.json(
+            { success: false, message: "Payment id is not provided" },
+            { status: 400 },
+          );
+        }
+      } catch (error) {
+        return NextResponse.json({
+          success: false,
+          error: error?.message || "Error while adding payment",
+        });
+      }
+
+    case "DELETE":
+      try {
+        const paymentId = req.nextUrl.searchParams.get("paymentId");
+        if (paymentId) {
+           const deletedPayment = await Payment.findByIdAndDelete(paymentId);
+
+           if (!deletedPayment) {
+             return NextResponse.json(
+               { success: false, error: "Payment data not found" },
+               { status: 404 },
+             );
+           }
+           return NextResponse.json({ success: true, data: deletedPayment });
         } else {
           return NextResponse.json(
             { success: false, message: "Payment id is not provided" },
@@ -80,4 +104,5 @@ const handler = async (req) => {
 export const GET = authMiddleware(handler);
 export const POST = authMiddleware(handler);
 export const PATCH = authMiddleware(handler);
+export const DELETE = authMiddleware(handler)
 // export const PUT = authMiddleware(handler);

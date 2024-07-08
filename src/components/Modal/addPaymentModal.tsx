@@ -51,6 +51,7 @@ export default function AddPaymentModal({
   const [message, setMessage] = useState<string | undefined>(undefined);
   function closeModal() {
     setIsOpen(false);
+    setMessage("")
   }
 
   function openModal() {
@@ -208,7 +209,7 @@ export default function AddPaymentModal({
                       </div>
                       <div>
                         <label className="mb-2 mt-1 block text-black dark:text-white">
-                          Bill Date
+                          Bill Miti
                         </label>
                         <input
                           type="text"
@@ -234,6 +235,7 @@ export default function AddPaymentModal({
                       </div>
                       <div className="mt-4 flex flex-row items-center justify-center">
                         <button
+                          disabled={loading}
                           type="submit"
                           className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >

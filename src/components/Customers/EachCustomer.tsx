@@ -23,6 +23,8 @@ const EachCustomer = ({ id }) => {
     loadEachCustomer,
     loadCustomerPayments,
     customerPayments,
+    deletePayment,
+    deleting
   } = useApp();
   useEffect(() => {
     if (id) {
@@ -47,7 +49,6 @@ const EachCustomer = ({ id }) => {
         if (each?.date) {
           let date = each?.date?.split("-");
           let temp = date[0];
-          console.log(temp, year);
           if (temp == year) {
             filtered.push(each);
           }
@@ -121,6 +122,8 @@ const EachCustomer = ({ id }) => {
                   setModal={closeModal}
                   setMode={setMode}
                   selectedYear={selectedYear}
+                  deletePayment={deletePayment}
+                  deleting={deleting}
                 />
               ) : (
                 <h1>No payments for in {selectedYear}</h1>

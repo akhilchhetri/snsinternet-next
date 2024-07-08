@@ -16,7 +16,7 @@ export function AppProvider({ children }) {
   const [paymentLoading, setPaymentLoading]= useState(false)
   const [searchText, setSearchText]= useState(undefined)
   const [searching, setSearching] = useState(false)
-
+  const [deleting, setDeleting] = useState(false)
   const [loading, setLoading] = useState(true);
   // const [authToken, setAuthToken] = useState(
   //   localStorage.getItem("token") || null,
@@ -43,9 +43,7 @@ export function AppProvider({ children }) {
        toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired"){
         setCustomers(undefined)
-        // localStorage.removeItem('token')
-        setAuthToken('token', token)
-        // setAuthToken(null)
+        setAuthToken(undefined)
        }
        setCustomerLoading(false);
        setCustomers(undefined)
@@ -55,7 +53,6 @@ export function AppProvider({ children }) {
     setCustomerLoading(true);
     try{
       const response = await axios.get(`/api/customers/${id}`)
-      console.log(response?.data);
       if(response?.data?.data){
         setCustomer(response?.data?.data)
       }else{
@@ -66,9 +63,7 @@ export function AppProvider({ children }) {
       toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired") {
          setCustomer(undefined);
-        //  localStorage.removeItem("token");
-        setAuthToken('token', undefined)
-        //  setAuthToken(null);
+        setAuthToken(undefined);
        }
        setCustomerLoading(false);
     }
@@ -87,9 +82,7 @@ export function AppProvider({ children }) {
       setPaymentLoading(false)
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
-        // localStorage.removeItem('token')
-        setAuthToken("token", undefined);
-        // setAuthToken(null)
+        setAuthToken(undefined);
       }
     }
   }
@@ -103,9 +96,7 @@ export function AppProvider({ children }) {
      } catch (error) {
        toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired") {
-        //  localStorage.removeItem("token");
-        //  setAuthToken(null);
-        setAuthToken("token", undefined);
+         setAuthToken(undefined);
        }
      }
   }
@@ -120,9 +111,28 @@ export function AppProvider({ children }) {
     } catch (error) {
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
-        // localStorage.removeItem("token");
-        // setAuthToken(null);
-        setAuthToken("token", undefined);
+        setAuthToken(undefined);
+      }
+    }
+  }
+
+  const deletePayment = async(data) =>{
+    try{
+      toast.success("Deleting payment")
+      setDeleting(true)
+      const response = await axios.delete(`/api/payments/?paymentId=${data?._id}`, {
+        data,
+      });
+      if (response?.data?.success) {
+        setDeleting(false);
+        loadCustomerPayments(data?.customer)
+        toast.success("Success")  
+      }      
+    }catch(error){
+      setDeleting(false);
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setAuthToken(undefined);
       }
     }
   }
@@ -132,7 +142,6 @@ export function AppProvider({ children }) {
     if(searchText?.length>0 && customers?.length>0){
       setSearching(true)
       const result = searchCustomersByName(customers, searchText)
-      console.log("Search result", result)
       setCustomers(result)
       setTimeout(()=>{
         setSearching(false);
@@ -168,7 +177,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
-        customers, setCustomers, customerLoading, setCustomerLoading, customer, setCustomer, modal, closeModal, mode, setMode, authToken, setAuthToken, loadCustomers, loadEachCustomer, loadCustomerPayments, customerPayments, addCustomerPayment, updateCustomerPayment, setSearchText, searchText, searching
+        customers, setCustomers, customerLoading, setCustomerLoading, customer, setCustomer, modal, closeModal, mode, setMode, authToken, setAuthToken, loadCustomers, loadEachCustomer, loadCustomerPayments, customerPayments, addCustomerPayment, updateCustomerPayment, setSearchText, searchText, searching, deletePayment, deleting
       }}
     >
       {children}

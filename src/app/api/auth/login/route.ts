@@ -28,7 +28,7 @@ export async function POST(request:NextRequest) {
 
 // @ts-nocheck
   const token = jwt.sign({ userId: user._id, email: user?.email }, JWT_SECRET, {
-    expiresIn: "1hr",
+    expiresIn: "24hr",
   });
 
   const response = NextResponse.json({token:token, status:200, message: "Login successful" });
