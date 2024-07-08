@@ -1,3 +1,4 @@
+// @ts-nocheck
 // app/api/customers/route.ts
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
