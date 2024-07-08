@@ -7,7 +7,7 @@ import authMiddleware from "@/lib/authMiddleware";
 const handler = async (req) => {
   await dbConnect();
   try {
-    const customers = await Customer.find({}).exec();
+    const customers = await Customer.find({})?.lean().exec();
     return NextResponse.json({ success: true, data: customers });
   } catch (error) {
     return NextResponse.json({
