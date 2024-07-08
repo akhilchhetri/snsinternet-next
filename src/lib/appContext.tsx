@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import useLocalStorage from "@/hooks/useLocalStorage";
 const AppContext = createContext();
 export function AppProvider({ children }) {
   const [customers, setCustomers] = useState(undefined)
@@ -17,9 +18,10 @@ export function AppProvider({ children }) {
   const [searching, setSearching] = useState(false)
 
   const [loading, setLoading] = useState(true);
-  const [authToken, setAuthToken] = useState(
-    localStorage.getItem("token") || null,
-  );
+  // const [authToken, setAuthToken] = useState(
+  //   localStorage.getItem("token") || null,
+  // );
+  const [authToken, setAuthToken] = useLocalStorage('token', undefined)
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -41,8 +43,9 @@ export function AppProvider({ children }) {
        toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired"){
         setCustomers(undefined)
-        localStorage.removeItem('token')
-        setAuthToken(null)
+        // localStorage.removeItem('token')
+        setAuthToken('token', token)
+        // setAuthToken(null)
        }
        setCustomerLoading(false);
        setCustomers(undefined)
@@ -63,8 +66,9 @@ export function AppProvider({ children }) {
       toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired") {
          setCustomer(undefined);
-         localStorage.removeItem("token");
-         setAuthToken(null);
+        //  localStorage.removeItem("token");
+        setAuthToken('token', undefined)
+        //  setAuthToken(null);
        }
        setCustomerLoading(false);
     }
@@ -83,8 +87,9 @@ export function AppProvider({ children }) {
       setPaymentLoading(false)
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
-        localStorage.removeItem('token')
-        setAuthToken(null)
+        // localStorage.removeItem('token')
+        setAuthToken("token", undefined);
+        // setAuthToken(null)
       }
     }
   }
@@ -98,8 +103,9 @@ export function AppProvider({ children }) {
      } catch (error) {
        toast.error(error?.response?.data?.error || "Error occured");
        if (error?.response?.data?.type === "expired") {
-         localStorage.removeItem("token");
-         setAuthToken(null);
+        //  localStorage.removeItem("token");
+        //  setAuthToken(null);
+        setAuthToken("token", undefined);
        }
      }
   }
@@ -114,8 +120,9 @@ export function AppProvider({ children }) {
     } catch (error) {
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
-        localStorage.removeItem("token");
-        setAuthToken(null);
+        // localStorage.removeItem("token");
+        // setAuthToken(null);
+        setAuthToken("token", undefined);
       }
     }
   }
