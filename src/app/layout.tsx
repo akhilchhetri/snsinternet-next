@@ -5,6 +5,9 @@ import "@/css/satoshi.css";
 import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
+import ToastConfig from "@/components/ToastConfig";
+import { AppProvider } from "@/lib/appContext";
+import ProtectedRoute from "./protected-route";
 
 export default function RootLayout({
   children,
@@ -24,7 +27,12 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? <Loader /> : children}
+          <AppProvider>
+            <ProtectedRoute>
+              <ToastConfig />
+              {loading ? <Loader /> : children}
+            </ProtectedRoute>
+          </AppProvider>
         </div>
       </body>
     </html>

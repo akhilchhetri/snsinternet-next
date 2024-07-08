@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+// import bcrypt from "bcryptjs";
 
 const UserSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
@@ -12,5 +13,8 @@ const UserSchema = new mongoose.Schema({
   notifications: { type: [String], default: [] },
   salt: { type: String, required: true },
 });
+// UserSchema.methods.comparePassword = async function (candidatePassword:any) {
+//   return await bcrypt.compare(candidatePassword, this.password);
+// };
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

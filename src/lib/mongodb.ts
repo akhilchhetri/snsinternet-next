@@ -1,4 +1,4 @@
-// lib/mongodb.js
+// @ts-nocheck
 import mongoose, { ConnectOptions } from "mongoose";
 
 const MONGODB_URI:string = process.env.MONGODB_URI || "";
@@ -45,9 +45,11 @@ async function dbConnect() {
 //      useUnifiedTopology: true,
 //    };
 
-   cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
-     return mongoose.connection;
-   });
+   cached.promise = mongoose
+     .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+     .then((mongoose) => {
+       return mongoose.connection;
+     });
  }
  cached.conn = await cached.promise;
  return cached.conn;
