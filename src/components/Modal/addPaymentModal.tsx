@@ -58,49 +58,54 @@ export default function AddPaymentModal({
     setIsOpen(true);
   }
   const handleSubmitPayment = async (e: any) => {
-    setLoading(true);
-    e.preventDefault();
-    if (mode === "add") {
-      if (customer?._id) {
-        let data = {
-          date: date,
-          amount: amount,
-          paymentTitle: title,
-          remarks: remarks,
-          customer: customer?._id,
-          billDate: billDate,
-          due: due,
-        };
-        const response = await addCustomerPayment(data, customer?._id);
-        if (response?.success) {
-          toast.success("Payment added successfully");
-          setTimeout(() => {
-            closeModal();
-          }, 2000);
+    if(!loading){
+      setLoading(true);
+      e.preventDefault();
+      if (mode === "add") {
+        if (customer?._id) {
+          let data = {
+            date: date,
+            amount: amount,
+            paymentTitle: title,
+            remarks: remarks,
+            customer: customer?._id,
+            billDate: billDate,
+            due: due,
+          };
+          const response = await addCustomerPayment(data, customer?._id);
+          if (response?.success) {
+            toast.success("Payment added successfully");
+            setTimeout(() => {
+              closeModal();
+            }, 2000);
+          }
+          setLoading(false);
         }
-        setLoading(false);
-      }
-    } else {
-      if (customer?._id) {
-        let data = {
-          date: date || payment?.date,
-          amount: amount,
-          paymentTitle: title,
-          remarks: remarks,
-          billDate: billDate,
-          customer: customer?._id,
-          due: due,
-          payment_id: payment?._id,
-        };
-        const response = await updateCustomerPayment(data, customer?._id);
-        if (response) {
-          setMessage("Payment Updated successfully");
-          setTimeout(() => {
-            closeModal();
-          }, 2000);
+      } else {
+        if (customer?._id) {
+          let data = {
+            date: date || payment?.date,
+            amount: amount,
+            paymentTitle: title,
+            remarks: remarks,
+            billDate: billDate,
+            customer: customer?._id,
+            due: due,
+            payment_id: payment?._id,
+          };
+          const response = await updateCustomerPayment(data, customer?._id);
+          if (response) {
+            setMessage("Payment Updated successfully");
+            setTimeout(() => {
+              closeModal();
+            }, 2000);
+          }
+          setTimeout(()=>{
+              setLoading(false);
+          },3000) 
+        
+          loadCustomerPayments(customer?._id);
         }
-        setLoading(false);
-        loadCustomerPayments(customer?._id);
       }
     }
   };
@@ -235,7 +240,7 @@ export default function AddPaymentModal({
                       </div>
                       <div className="mt-4 flex flex-row items-center justify-center">
                         <button
-                          disabled={loading}
+                          disabled={loading? true:false}
                           type="submit"
                           className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
