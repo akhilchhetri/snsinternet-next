@@ -5,7 +5,6 @@ import Link from "next/link";
 import moment from "moment";
 import { PlusCircleIcon, Trash2 } from "lucide-react";
 
-
 const PaymentsTable = ({
   payments,
   setModal,
@@ -13,7 +12,7 @@ const PaymentsTable = ({
   setMode,
   selectedYear,
   deletePayment,
-  deleting
+  deleting,
 }: {
   payments: any;
   setPayment: (d: any) => void;
@@ -29,7 +28,7 @@ const PaymentsTable = ({
     setMode("edit");
   };
   const handleDeletePayment = (data: any) => {
-   deletePayment(data)
+    deletePayment(data);
   };
   return (
     <div className="w-full rounded-sm border border-stroke px-2 pb-2.5 pt-2 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 md:px-5 md:pt-6 xl:pb-1">
@@ -51,7 +50,7 @@ const PaymentsTable = ({
               Due
             </h6>
           </div>
-          <div className="p-1 text-center hidden md:block xl:p-2">
+          <div className="hidden p-1 text-center md:block xl:p-2">
             <h6 className="text-[12px] text-sm font-medium md:text-[15px] ">
               Payment Title
             </h6>
@@ -104,7 +103,7 @@ const PaymentsTable = ({
                 </p>
               </div>
 
-              <div className="hidden md:flex items-center justify-center p-1 xl:p-2">
+              <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
                 <p className=" text-[12px] text-black dark:text-white sm:block md:text-[16px]">
                   {each?.paymentTitle}
                 </p>
@@ -121,20 +120,8 @@ const PaymentsTable = ({
                 </p>
               </div>
 
-              {/* <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
-                <p className=" text-black text-[12px] md:text-[16px] dark:text-white sm:block">
-                  {dateMoment?.year()}- {dateMoment?.month()} -{' '}
-                  {dateMoment?.day()}
-                </p>
-              </div> */}
-
               <div className="items-center justify-center p-1 sm:flex xl:p-2">
                 <div className="flex flex-col justify-center gap-[2px] md:flex-row md:items-center md:gap-1">
-                  {/* <Link to={`/customers/${each?._id}`}>
-                    <button className="rounded bg-white py-1 px-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-                      Edit
-                    </button>
-                  </Link> */}
                   <button
                     onClick={() => handleEditPayment(each)}
                     className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-2 py-2 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
@@ -146,7 +133,6 @@ const PaymentsTable = ({
                     onClick={() => handleDeletePayment(each)}
                     className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-2 py-2 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
                   >
-                    
                     <Trash2 className="size-3 text-red" />
                     <span className="ml-[1px] text-red">Delete</span>
                   </button>

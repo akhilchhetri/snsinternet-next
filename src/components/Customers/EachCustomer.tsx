@@ -24,7 +24,7 @@ const EachCustomer = ({ id }) => {
     loadCustomerPayments,
     customerPayments,
     deletePayment,
-    deleting
+    deleting,
   } = useApp();
   useEffect(() => {
     if (id) {
@@ -52,10 +52,11 @@ const EachCustomer = ({ id }) => {
           if (temp == year) {
             filtered.push(each);
           }
-        }
-        if (each?.year) {
-          if (year == each?.year) {
-            filtered.push(each);
+        } else {
+          if (each?.year) {
+            if (year == each?.year) {
+              filtered.push(each);
+            }
           }
         }
       });

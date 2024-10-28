@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 // import { RxCross2 } from "react-icons/rx";
 // import Buttons from "../UiElements/Buttons";
@@ -12,6 +12,7 @@ import { SyncLoader } from "react-spinners";
 // import usePayments from "../../hooks/usePayments";
 import { useApp } from "@/lib/appContext";
 import { toast } from "react-toastify";
+import convertMonthNameToNumber from "@/lib/helper";
 
 export default function AddPaymentModal({
   isOpen,
@@ -26,12 +27,26 @@ export default function AddPaymentModal({
   mode: any;
   payment: any;
 }) {
-  const { loadCustomerPayments, addCustomerPayment, updateCustomerPayment } =
-    useApp();
-
   const [date, setDate] = useState<string | undefined>(
     mode === "edit" ? payment?.date : undefined,
   );
+  useEffect(() => {
+    if (payment) {
+      if (!payment?.date) {
+        if (typeof payment?.month === "string") {
+          let month = convertMonthNameToNumber(payment?.month);
+          setDate(`${payment?.year}-${month}-${payment?.day}`);
+        } else {
+          setDate(`${payment?.year}-${payment?.month}-${payment?.day}`);
+        }
+      } else {
+        setDate(payment?.date);
+      }
+    }
+  }, [payment]);
+  const { loadCustomerPayments, addCustomerPayment, updateCustomerPayment } =
+    useApp();
+
   const [amount, setAmount] = useState<string | number | undefined>(
     mode === "edit" ? payment?.amount : undefined,
   );
@@ -51,14 +66,14 @@ export default function AddPaymentModal({
   const [message, setMessage] = useState<string | undefined>(undefined);
   function closeModal() {
     setIsOpen(false);
-    setMessage("")
+    setMessage("");
   }
 
   function openModal() {
     setIsOpen(true);
   }
   const handleSubmitPayment = async (e: any) => {
-    if(!loading){
+    if (!loading) {
       setLoading(true);
       e.preventDefault();
       if (mode === "add") {
@@ -100,10 +115,10 @@ export default function AddPaymentModal({
               closeModal();
             }, 2000);
           }
-          setTimeout(()=>{
-              setLoading(false);
-          },3000) 
-        
+          setTimeout(() => {
+            setLoading(false);
+          }, 3000);
+
           loadCustomerPayments(customer?._id);
         }
       }
@@ -160,8 +175,10 @@ export default function AddPaymentModal({
                           <input
                             required
                             type="date"
-                            value={mode === "edit" ? payment?.date : date}
-                            onChange={(e) => setDate(e?.target?.value)}
+                            defaultValue={date}
+                            onChange={(e) => {
+                              setDate(e?.target?.value);
+                            }}
                             className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           />
                         </div>
@@ -240,7 +257,7 @@ export default function AddPaymentModal({
                       </div>
                       <div className="mt-4 flex flex-row items-center justify-center">
                         <button
-                          disabled={loading? true:false}
+                          disabled={loading ? true : false}
                           type="submit"
                           className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
