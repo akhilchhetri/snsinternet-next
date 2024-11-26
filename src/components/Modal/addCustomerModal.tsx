@@ -316,7 +316,7 @@ export default function AddCustomer({
                             className="w-full rounded-lg border-[1.5px] border-primary bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
                           />
                         </div>
-                        {packages?.length > 0 && (
+                        {/* {packages?.length > 0 && (
                           <div>
                             <label className="mb-2 mt-1 block text-black dark:text-white">
                               Select Package
@@ -402,7 +402,7 @@ export default function AddCustomer({
                               </Combobox>
                             </div>
                           </div>
-                        )}
+                        )} */}
 
                         <div className="mt-4 flex flex-row items-center justify-center">
                           <button
