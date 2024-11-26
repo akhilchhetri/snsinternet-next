@@ -40,7 +40,7 @@ const EachCustomer = ({ id }) => {
   //   const { customerPayments } = usePayments(id);
   //   let { packages } = usePackages();
   const [modal, closeModal] = useState(false);
-  // const [addCustomerModal, closeAddCustomerModal] = useState(false);
+  const [addCustomerModal, closeAddCustomerModal] = useState(false);
 
   const filterCustomerPayments = (year: any) => {
     if (year && customerPayments) {

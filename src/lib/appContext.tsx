@@ -7,100 +7,132 @@ import { toast } from "react-toastify";
 import useLocalStorage from "@/hooks/useLocalStorage";
 const AppContext = createContext();
 export function AppProvider({ children }) {
-  const [customers, setCustomers] = useState(undefined)
-  const [customerLoading, setCustomerLoading] = useState(undefined)
-  const [customer, setCustomer] = useState(undefined)
+  const [customers, setCustomers] = useState(undefined);
+  const [customerLoading, setCustomerLoading] = useState(undefined);
+  const [customer, setCustomer] = useState(undefined);
   const [modal, closeModal] = useState(false);
-  const [mode, setMode] = useState(undefined)
-  const [customerPayments, setCustomerPayments] = useState(undefined)
-  const [paymentLoading, setPaymentLoading]= useState(false)
-  const [searchText, setSearchText]= useState(undefined)
-  const [searching, setSearching] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  const [mode, setMode] = useState(undefined);
+  const [customerPayments, setCustomerPayments] = useState(undefined);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [searchText, setSearchText] = useState(undefined);
+  const [searching, setSearching] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [packages, setPackages] = useState(undefined);
   // const [authToken, setAuthToken] = useState(
   //   localStorage.getItem("token") || null,
   // );
-  const [authToken, setAuthToken] = useLocalStorage('token', undefined)
+  const [authToken, setAuthToken] = useLocalStorage("token", undefined);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
-  
-//   useEffect(()=>{
-//     loadCustomers()
-//   },[])
-  const loadCustomers = async()=>{
-     try {
-       setCustomerLoading(true)
-       const response = await axios.get("/api/customers");
-       if(response?.data?.data){
-        setCustomers(response?.data?.data)
-        setCustomerLoading(false)
-       }
-     } catch (error) {
-       toast.error(error?.response?.data?.error || "Error occured");
-       if (error?.response?.data?.type === "expired"){
-        setCustomers(undefined)
-        setAuthToken(undefined)
-       }
-       setCustomerLoading(false);
-       setCustomers(undefined)
-     }
-  }
-  const loadEachCustomer = async (id)=>{
-    setCustomerLoading(true);
-    try{
-      const response = await axios.get(`/api/customers/${id}`)
-      if(response?.data?.data){
-        setCustomer(response?.data?.data)
-      }else{
-        setCustomer(undefined)
+
+  //   useEffect(()=>{
+  //     loadCustomers()
+  //   },[])
+
+  const getPackages = async () => {
+    try {
+      const response = await axios.get("/api/packages");
+      if (response?.data?.data) {
+        setCustomers(response?.data?.data);
+        setCustomerLoading(false);
       }
-      setCustomerLoading(false)
-    }catch(error){
-      toast.error(error?.response?.data?.error || "Error occured");
-       if (error?.response?.data?.type === "expired") {
-         setCustomer(undefined);
-        setAuthToken(undefined);
-       }
-       setCustomerLoading(false);
+    } catch (error) {
+      console.log("this is error,", error);
     }
-  }
+  };
+  const loadCustomers = async () => {
+    try {
+      setCustomerLoading(true);
+      const response = await axios.get("/api/customers");
+      if (response?.data?.data) {
+        setCustomers(response?.data?.data);
+        setCustomerLoading(false);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setCustomers(undefined);
+        setAuthToken(undefined);
+      }
+      setCustomerLoading(false);
+      setCustomers(undefined);
+    }
+  };
+  const loadEachCustomer = async (id) => {
+    setCustomerLoading(true);
+    try {
+      const response = await axios.get(`/api/customers/${id}`);
+      if (response?.data?.data) {
+        setCustomer(response?.data?.data);
+      } else {
+        setCustomer(undefined);
+      }
+      setCustomerLoading(false);
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setCustomer(undefined);
+        setAuthToken(undefined);
+      }
+      setCustomerLoading(false);
+    }
+  };
 
   // loading customer payments
-  const loadCustomerPayments = async(id)=>{
-    setPaymentLoading(true)
-    try{
-      setPaymentLoading(false)
-      const response = await axios.get(`/api/payments/?customerId=${id}`)
-      if(response?.data?.data){
-        setCustomerPayments(response?.data?.data)
+  const loadCustomerPayments = async (id) => {
+    setPaymentLoading(true);
+    try {
+      setPaymentLoading(false);
+      const response = await axios.get(`/api/payments/?customerId=${id}`);
+      if (response?.data?.data) {
+        setCustomerPayments(response?.data?.data);
       }
-    }catch(error){
-      setPaymentLoading(false)
+    } catch (error) {
+      setPaymentLoading(false);
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
         setAuthToken(undefined);
       }
     }
-  }
-  const addCustomerPayment = async(data, id) =>{
-     try {
-       const response = await axios.post(`/api/payments/?customerId=${id}`, {data});
-       if (response?.data?.data) {
-        await loadCustomerPayments(id)
-        return response?.data
-       }
-     } catch (error) {
-       toast.error(error?.response?.data?.error || "Error occured");
-       if (error?.response?.data?.type === "expired") {
-         setAuthToken(undefined);
-       }
-     }
-  }
-  const updateCustomerPayment = async(data, cid)=>{
+  };
+  const addNewCustomer = async (data) => {
+    try {
+      const response = await axios.post(`/api/customers`, {
+        data,
+      });
+      if (response?.data?.data) {
+        await loadCustomers();
+        return response?.data;
+      }
+    } catch (error) {
+      console.log("this is error", error);
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setAuthToken(undefined);
+      }
+    }
+  };
+  const addCustomerPayment = async (data, id) => {
+    try {
+      const response = await axios.post(`/api/payments/?customerId=${id}`, {
+        data,
+      });
+      if (response?.data?.data) {
+        await loadCustomerPayments(id);
+        return response?.data;
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setAuthToken(undefined);
+      }
+    }
+  };
+  const updateCustomerPayment = async (data, cid) => {
     try {
       const response = await axios.patch(`/api/payments/?customerId=${cid}`, {
         data,
@@ -114,43 +146,85 @@ export function AppProvider({ children }) {
         setAuthToken(undefined);
       }
     }
-  }
-
-  const deletePayment = async(data) =>{
-    try{
-      toast.success("Deleting payment")
-      setDeleting(true)
-      const response = await axios.delete(`/api/payments/?paymentId=${data?._id}`, {
+  };
+  const updateCustomer = async (data, id) => {
+    try {
+      const response = await axios.patch(`/api/customers/?customerId=${id}`, {
         data,
       });
+      if (response?.data?.data) {
+        await loadCustomers();
+        return response?.data;
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setAuthToken(undefined);
+      }
+    }
+  };
+
+  const deletePayment = async (data) => {
+    try {
+      toast.success("Deleting payment");
+      setDeleting(true);
+      const response = await axios.delete(
+        `/api/payments/?paymentId=${data?._id}`,
+        {
+          data,
+        },
+      );
       if (response?.data?.success) {
         setDeleting(false);
-        loadCustomerPayments(data?.customer)
-        toast.success("Success")  
-      }      
-    }catch(error){
+        loadCustomerPayments(data?.customer);
+        toast.success("Success");
+      }
+    } catch (error) {
       setDeleting(false);
       toast.error(error?.response?.data?.error || "Error occured");
       if (error?.response?.data?.type === "expired") {
         setAuthToken(undefined);
       }
     }
-  }
+  };
+  const deleteCustomer = async (data) => {
+    try {
+      toast.success("Deleting customer");
+      setDeleting(true);
+      const response = await axios.delete(
+        `/api/customers/?customerId=${data?._id}`,
+        {
+          data,
+        },
+      );
+      if (response?.data?.success) {
+        setDeleting(false);
+        loadCustomers(data?.customer);
+        toast.success("Success");
+      }
+    } catch (error) {
+      setDeleting(false);
+      toast.error(error?.response?.data?.error || "Error occured");
+      if (error?.response?.data?.type === "expired") {
+        setAuthToken(undefined);
+      }
+    }
+  };
 
   // detect search mode
-  useEffect(()=>{
-    if(searchText?.length>0 && customers?.length>0){
-      setSearching(true)
-      const result = searchCustomersByName(customers, searchText)
-      setCustomers(result)
-      setTimeout(()=>{
+  useEffect(() => {
+    if (searchText?.length > 0 && customers?.length > 0) {
+      setSearching(true);
+      const result = searchCustomersByName(customers, searchText);
+      setCustomers(result);
+      setTimeout(() => {
         setSearching(false);
-      },500)
-    }else{
-      loadCustomers()
-      setSearching(false)
+      }, 500);
+    } else {
+      loadCustomers();
+      setSearching(false);
     }
-  },[searchText])
+  }, [searchText]);
 
   function searchCustomersByName(customers, searchTerm) {
     // if (!searchTerm) {
@@ -163,7 +237,7 @@ export function AppProvider({ children }) {
       let customer_name =
         customer?.firstName?.toLowerCase() +
         " " +
-        customer?.lastName?.toLowerCase()
+        customer?.lastName?.toLowerCase();
       // const firstNameMatch = customer.firstName
       //   .toLowerCase()
       //   .includes(lowerCaseSearchTerm);
@@ -177,7 +251,35 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
-        customers, setCustomers, customerLoading, setCustomerLoading, customer, setCustomer, modal, closeModal, mode, setMode, authToken, setAuthToken, loadCustomers, loadEachCustomer, loadCustomerPayments, customerPayments, addCustomerPayment, updateCustomerPayment, setSearchText, searchText, searching, deletePayment, deleting
+        customers,
+        setCustomers,
+        customerLoading,
+        setCustomerLoading,
+        customer,
+        setCustomer,
+        modal,
+        closeModal,
+        mode,
+        setMode,
+        authToken,
+        setAuthToken,
+        loadCustomers,
+        loadEachCustomer,
+        loadCustomerPayments,
+        customerPayments,
+        addCustomerPayment,
+        updateCustomerPayment,
+        setSearchText,
+        searchText,
+        searching,
+        deletePayment,
+        deleting,
+        getPackages,
+        packages,
+        setPackages,
+        addNewCustomer,
+        deleteCustomer,
+        updateCustomer,
       }}
     >
       {children}
@@ -185,11 +287,10 @@ export function AppProvider({ children }) {
   );
 }
 
-export function  useApp() {
+export function useApp() {
   const context = useContext(AppContext);
   if (context === undefined) {
     throw new Error("useApp must be used within an AppProvider");
   }
   return context;
 }
-

@@ -72,15 +72,15 @@ const handler = async (req) => {
       try {
         const paymentId = req.nextUrl.searchParams.get("paymentId");
         if (paymentId) {
-           const deletedPayment = await Payment.findByIdAndDelete(paymentId);
+          const deletedPayment = await Payment.findByIdAndDelete(paymentId);
 
-           if (!deletedPayment) {
-             return NextResponse.json(
-               { success: false, error: "Payment data not found" },
-               { status: 404 },
-             );
-           }
-           return NextResponse.json({ success: true, data: deletedPayment });
+          if (!deletedPayment) {
+            return NextResponse.json(
+              { success: false, error: "Payment data not found" },
+              { status: 404 },
+            );
+          }
+          return NextResponse.json({ success: true, data: deletedPayment });
         } else {
           return NextResponse.json(
             { success: false, message: "Payment id is not provided" },
@@ -104,5 +104,4 @@ const handler = async (req) => {
 export const GET = authMiddleware(handler);
 export const POST = authMiddleware(handler);
 export const PATCH = authMiddleware(handler);
-export const DELETE = authMiddleware(handler)
-// export const PUT = authMiddleware(handler);
+export const DELETE = authMiddleware(handler);

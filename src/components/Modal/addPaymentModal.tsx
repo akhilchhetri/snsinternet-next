@@ -3,13 +3,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-// import { RxCross2 } from "react-icons/rx";
-// import Buttons from "../UiElements/Buttons";
-// import { Link } from "react-router-dom";
-// import {}
+import { format } from "date-fns";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+
 import { SyncLoader } from "react-spinners";
-// import { addCustomerPayment, updateCustomerPayment } from "../../api/services";
-// import usePayments from "../../hooks/usePayments";
+
 import { useApp } from "@/lib/appContext";
 import { toast } from "react-toastify";
 import convertMonthNameToNumber from "@/lib/helper";
@@ -27,8 +27,10 @@ export default function AddPaymentModal({
   mode: any;
   payment: any;
 }) {
+  // const [startDate, setStartDate] = useState(new Date());
+
   const [date, setDate] = useState<string | undefined>(
-    mode === "edit" ? payment?.date : undefined,
+    mode === "edit" ? payment?.date : format(new Date(), "yyyy-MM-dd"),
   );
   useEffect(() => {
     if (payment) {
@@ -68,6 +70,23 @@ export default function AddPaymentModal({
     setIsOpen(false);
     setMessage("");
   }
+  useEffect(() => {
+    if (mode === "edit") {
+      setAmount(payment?.amount);
+      setDue(payment?.due);
+      setBillDate(payment?.billDate);
+      setRemarks(payment?.remarks);
+      setTitle(payment?.paymentTitle);
+      setBillDate(payment?.billDate);
+    } else {
+      // setAmount(0);
+      // setDate(format(new Date(), "yyyy-MM-dd"));
+      // setDue(0);
+      // setBillDate(undefined);
+      // setRemarks(undefined);
+      // setTitle(undefined);
+    }
+  }, [mode]);
 
   function openModal() {
     setIsOpen(true);
@@ -81,7 +100,7 @@ export default function AddPaymentModal({
           let data = {
             date: date,
             amount: amount,
-            paymentTitle: title,
+            paymentTitle: title || "Title",
             remarks: remarks,
             customer: customer?._id,
             billDate: billDate,
@@ -89,6 +108,12 @@ export default function AddPaymentModal({
           };
           const response = await addCustomerPayment(data, customer?._id);
           if (response?.success) {
+            setAmount(0);
+            setDate(format(new Date(), "yyyy-MM-dd"));
+            setDue(0);
+            setBillDate(undefined);
+            setRemarks(undefined);
+            setTitle(undefined);
             toast.success("Payment added successfully");
             setTimeout(() => {
               closeModal();
@@ -97,11 +122,12 @@ export default function AddPaymentModal({
           setLoading(false);
         }
       } else {
+        toast.success("Updating payment");
         if (customer?._id) {
           let data = {
-            date: date || payment?.date,
+            date: format(date, "yyyy-MM-dd") || payment?.date,
             amount: amount,
-            paymentTitle: title,
+            paymentTitle: title || "Title",
             remarks: remarks,
             billDate: billDate,
             customer: customer?._id,
@@ -110,6 +136,12 @@ export default function AddPaymentModal({
           };
           const response = await updateCustomerPayment(data, customer?._id);
           if (response) {
+            setAmount(0);
+            setDate(format(new Date(), "yyyy-MM-dd"));
+            setDue(0);
+            setBillDate(undefined);
+            setRemarks(undefined);
+            setTitle(undefined);
             setMessage("Payment Updated successfully");
             setTimeout(() => {
               closeModal();
@@ -169,24 +201,7 @@ export default function AddPaymentModal({
                     <form onSubmit={handleSubmitPayment}>
                       <div>
                         <label className="mb-2 mt-1 block text-black dark:text-white">
-                          Date
-                        </label>
-                        <div className="relative">
-                          <input
-                            required
-                            type="date"
-                            defaultValue={date}
-                            onChange={(e) => {
-                              setDate(e?.target?.value);
-                            }}
-                            className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 mt-1 block text-black dark:text-white">
-                          Amount
+                          Amount Paid
                         </label>
                         <input
                           required
@@ -201,6 +216,40 @@ export default function AddPaymentModal({
                       </div>
                       <div>
                         <label className="mb-2 mt-1 block text-black dark:text-white">
+                          Due Left
+                        </label>
+                        <input
+                          type="number"
+                          defaultValue={mode === "edit" ? payment?.due : due}
+                          placeholder="Enter Due Amount"
+                          onChange={(e) => setDue(e?.target?.value)}
+                          className="w-full rounded-lg border-[1.5px] border-primary bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-2 mt-1 block text-black dark:text-white">
+                          Date
+                        </label>
+                        <div className="relative w-full">
+                          <DatePicker
+                            className="w-[100%] min-w-[45vw]  rounded-md border-[1.5px] border-primary px-4 py-3"
+                            selected={date}
+                            onChange={(date) => setDate(date)}
+                          />
+                          {/* <input
+                            required
+                            type="date"
+                            defaultValue={date}
+                            onChange={(e) => {
+                              setDate(e?.target?.value);
+                            }}
+                            className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                          /> */}
+                        </div>
+                      </div>
+
+                      {/* <div className="hidden">
+                        <label className="mb-2 mt-1 block text-black dark:text-white">
                           Payment Title
                         </label>
                         <input
@@ -213,7 +262,7 @@ export default function AddPaymentModal({
                           placeholder="Enter Payment Title"
                           className="w-full rounded-lg border-[1.5px] border-primary bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
                         />
-                      </div>
+                      </div> */}
 
                       <div>
                         <label className="mb-2 mt-1 block text-black dark:text-white">
@@ -243,18 +292,7 @@ export default function AddPaymentModal({
                           className="w-full rounded-lg border-[1.5px] border-primary bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
                         />
                       </div>
-                      <div>
-                        <label className="mb-2 mt-1 block text-black dark:text-white">
-                          Due
-                        </label>
-                        <input
-                          type="number"
-                          defaultValue={mode === "edit" ? payment?.due : due}
-                          placeholder="Enter Due Amount"
-                          onChange={(e) => setDue(e?.target?.value)}
-                          className="w-full rounded-lg border-[1.5px] border-primary bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
-                        />
-                      </div>
+
                       <div className="mt-4 flex flex-row items-center justify-center">
                         <button
                           disabled={loading ? true : false}

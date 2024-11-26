@@ -38,7 +38,7 @@ const PaymentsTable = ({
       </h4>
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-7">
+        <div className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-6">
           <div className="hidden p-1 text-center md:block xl:p-2">
             <h6 className="text-[12px] font-medium md:text-[15px]">Date</h6>
           </div>
@@ -50,7 +50,7 @@ const PaymentsTable = ({
               Due
             </h6>
           </div>
-          <div className="hidden p-1 text-center md:block xl:p-2">
+          <div className="hidden p-1 text-center xl:p-2">
             <h6 className="text-[12px] text-sm font-medium md:text-[15px] ">
               Payment Title
             </h6>
@@ -78,7 +78,7 @@ const PaymentsTable = ({
           return (
             <div
               key={key}
-              className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-7"
+              className="grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-6"
             >
               <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
                 {each?.date ? (
@@ -103,11 +103,11 @@ const PaymentsTable = ({
                 </p>
               </div>
 
-              <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
+              {/* <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
                 <p className=" text-[12px] text-black dark:text-white sm:block md:text-[16px]">
                   {each?.paymentTitle}
                 </p>
-              </div>
+              </div> */}
               <div className="flex items-center justify-center p-1 xl:p-2">
                 <p className=" text-[12px] text-black dark:text-white sm:block md:text-[16px]">
                   {each?.billDate}

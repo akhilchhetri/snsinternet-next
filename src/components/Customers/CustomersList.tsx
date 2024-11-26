@@ -10,6 +10,7 @@ import { useApp } from "@/lib/appContext";
 import CustomersTable from "./CustomersTable";
 import { BarLoader, CircleLoader } from "react-spinners";
 import AddPaymentModal from "../Modal/addPaymentModal";
+import AddCustomer from "../Modal/addCustomerModal";
 
 const Customers: React.FC = () => {
   // @ts-nocheck
@@ -20,13 +21,16 @@ const Customers: React.FC = () => {
     setSearchText,
     searchText,
     searching,
+    getPackages,
+    packages,
   } = useApp();
   useEffect(() => {
     loadCustomers();
   }, []);
-  const [customer, setCustomer] = useState(undefined)
+  const [customer, setCustomer] = useState(undefined);
   const [mode, setMode] = useState("add");
   const [modal, closeModal] = useState(false);
+  const [customerModal, setCustomerModal] = useState(false);
   return (
     <>
       <CustomerSearch setSearchText={setSearchText} />
@@ -36,6 +40,26 @@ const Customers: React.FC = () => {
         customer={customer}
         mode={mode}
       />
+      <AddCustomer
+        isOpen={customerModal}
+        setIsOpen={setCustomerModal}
+        customer={customer}
+        setCustomer={setCustomer}
+        mode={mode}
+        getPackages={getPackages}
+        packages={packages}
+      />
+      <button
+        type="submit"
+        onClick={() => {
+          setCustomer(undefined);
+          setCustomerModal(true);
+          setMode("add");
+        }}
+        className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-8 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+      >
+        Add New Customer
+      </button>
       {searchText ? (
         <div className="px-5 py-2">
           {searching ? (
@@ -59,6 +83,7 @@ const Customers: React.FC = () => {
           <CustomersTable
             customers={customers}
             setCustomer={setCustomer}
+            setCustomerModal={setCustomerModal}
             setModal={closeModal}
             setMode={setMode}
           />

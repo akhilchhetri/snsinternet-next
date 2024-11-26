@@ -31,7 +31,7 @@ const CardOne = ({ customer }) => {
           </span>
           <br />
           <span className="text-sm font-medium ">
-            Address: {customer?.joinDate}
+            Join Date: {customer?.joinDate}
           </span>
         </div>
       </div>

@@ -2,29 +2,41 @@
 import Link from "next/link";
 import moment from "moment";
 // import { RiAddCircleFill } from "react-icons/ri";
-import { CirclePlusIcon } from "lucide-react";
+import { CirclePlusIcon, CrossIcon, Delete, Trash } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { useApp } from "@/lib/appContext";
 
 const CustomersTable = ({
   customers,
-    setCustomer,
-    setModal,
-    setMode,
+  setCustomer,
+  setModal,
+  setCustomerModal,
+  setMode,
 }: {
   customers: any;
-    setCustomer: (d: any) => void;
-    setModal: (d: boolean) => void;
-    setMode: (d: string) => void;
+  setCustomer: (d: any) => void;
+  setModal: (d: boolean) => void;
+  setCustomerModal: (d: boolean) => void;
+  setMode: (d: string) => void;
 }) => {
+  const { deleteCustomer } = useApp();
   const handleAddPayment = (data: any) => {
     setModal(true);
     setCustomer(data);
     setMode("add");
   };
-  
+  const handleDeleteCustomer = async (data: any) => {
+    await deleteCustomer(data);
+  };
+  const handleEditCustomer = async (data: any) => {
+    setMode("edit");
+    setCustomerModal(true);
+    setCustomer(data);
+  };
   return (
     <div className="w-full rounded-lg border border-stroke pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="bg-red-500 flex flex-col">
-        <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-7">
+        <div className="grid grid-cols-3 rounded-sm border-b border-[#0000003D] bg-gray-2  dark:bg-meta-4 md:grid-cols-7">
           <div className="col-span-1 hidden max-w-[20px] p-1">
             <h6 className="text-xsm font-medium xsm:text-base">ID</h6>
           </div>
@@ -61,13 +73,12 @@ const CustomersTable = ({
           </div>
         </div>
         {customers.map((each: any, index: any) => {
-          let date = each?.joinDate;
-          const dateMoment = moment(date);
+          const formattedDate = format(parseISO(each?.joinDate), "yyyy-MM-dd");
 
           return (
             <div
               key={index}
-              className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 md:grid-cols-7"
+              className="grid grid-cols-3 rounded-sm border-b border-[#0000003D] bg-gray-2 dark:bg-meta-4 md:grid-cols-7"
             >
               <div className="hidden items-center gap-0 p-0 md:gap-3 md:p-1 xl:p-2">
                 <p className="text-[12px] text-black dark:text-white md:text-[16px]">
@@ -104,8 +115,7 @@ const CustomersTable = ({
               </div>
               <div className="hidden items-center justify-center p-1 md:flex xl:p-2">
                 <p className=" text-[12px] text-black dark:text-white sm:block md:text-[16px]">
-                  {dateMoment?.year()}- {dateMoment?.month()} -{" "}
-                  {dateMoment?.day()}
+                  {formattedDate}
                 </p>
               </div>
 
@@ -122,6 +132,20 @@ const CustomersTable = ({
                   >
                     <CirclePlusIcon className="mr-[2px] size-2 md:size-3" />
                     Add Payment
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCustomer(each)}
+                    className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-1 py-1 text-xs font-medium text-black text-red shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
+                  >
+                    <Trash className="mr-[2px] size-2 text-red md:size-3" />
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => handleEditCustomer(each)}
+                    className="flex flex-row items-center justify-center gap-[0.2px] rounded bg-white px-1 py-1 text-xs font-medium  text-green-600 shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
+                  >
+                    <Trash className="mr-[2px] size-2 text-green-600 md:size-3" />
+                    Edit
                   </button>
                 </div>
               </div>
